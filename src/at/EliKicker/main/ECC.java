@@ -65,6 +65,7 @@ public class ECC {
             if (bits.and(BigInteger.ONE).compareTo(BigInteger.ONE) == 0) {
                 res = point_add(res, G);
             }
+            bits = bits.shiftRight(1);
         }
         return res;
     }
