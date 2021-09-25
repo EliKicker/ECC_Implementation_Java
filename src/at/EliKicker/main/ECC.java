@@ -3,8 +3,6 @@ package at.EliKicker.main;
 import at.EliKicker.main.encryptionmethods.EcryptionMethod;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class ECC {
@@ -53,17 +51,18 @@ public class ECC {
 
     public BigInteger[] point_mult(BigInteger private_key, BigInteger[] G) {
         BigInteger[] res = null;
-        List<Integer> i = new ArrayList<>();
-        String[] s = private_key.toString(2).split("");
+        int iterations = private_key.bitLength();
+        BigInteger bits = BigInteger.ZERO;
 
-        for (int j = 0; j < s.length; j++) {
-            i.add(Integer.parseInt(s[j]));
+        while (private_key.compareTo(BigInteger.ZERO) != 0) {
+            bits = bits.shiftLeft(1);
+            bits = bits.or(private_key.and(BigInteger.ONE));
+            private_key = private_key.shiftRight(1);
         }
 
-        for (Integer bit : i) {
+        for (int i = 0; i < iterations; i++) {
             res = point_add(res, res);
-
-            if (bit == 1) {
+            if (bits.and(BigInteger.ONE).compareTo(BigInteger.ONE) == 0) {
                 res = point_add(res, G);
             }
         }
